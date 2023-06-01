@@ -32,6 +32,9 @@ public class Kapsejladser {
     this.dato = dato;
     this.time = time;
   }
+  public LocalDate getDate() {
+    return this.dato;
+  }
 
   @OneToMany(mappedBy = "kapsejladser", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Deltagere> deltagere = new ArrayList<>();

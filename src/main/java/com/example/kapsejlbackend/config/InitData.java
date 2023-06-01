@@ -12,6 +12,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Component
 public class InitData implements CommandLineRunner {
@@ -29,32 +33,68 @@ public class InitData implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    Sejlbaade sejlbaade1 = new Sejlbaade(null, "Boat 1", BaadType.STOERRE_END_40_FOD, null, 3, null);
-    Sejlbaade sejlbaade2 = new Sejlbaade(null, "Boat 2", BaadType.MINDRE_END_25_FOD, null, 2, null);
-    Sejlbaade sejlbaade3 = new Sejlbaade(null, "Boat 3", BaadType.MELLEM_25_OG_40_FOD, null, 1, null);
+    // Create boats
+    List<Sejlbaade> boats = new ArrayList<>();
+    boats.add(new Sejlbaade(null, "Boat 1", BaadType.STOERRE_END_40_FOD, null, 0, null));
+    boats.add(new Sejlbaade(null, "Boat 2", BaadType.MINDRE_END_25_FOD, null, 0, null));
+    boats.add(new Sejlbaade(null, "Boat 3", BaadType.MELLEM_25_OG_40_FOD, null, 0, null));
 
-    sejlbaade1 = sejlbaadeService.createSejlbaade(sejlbaade1);
-    sejlbaade2 = sejlbaadeService.createSejlbaade(sejlbaade2);
-    sejlbaade3 = sejlbaadeService.createSejlbaade(sejlbaade3);
+    for (int i = 4; i <= 30; i++) {
+      boats.add(new Sejlbaade(null, "Boat " + i, getRandomBoatType(), null, 0, null));
+    }
 
-    Kapsejladser kapsejladser1 = new Kapsejladser(LocalDate.of(2023, 5, 1));
-    Kapsejladser kapsejladser2 = new Kapsejladser(LocalDate.of(2023, 5, 8));
-    Kapsejladser kapsejladser3 = new Kapsejladser(LocalDate.of(2023, 5, 15));
+    boats = sejlbaadeService.createMultipleSejlbaade(boats);
 
-    kapsejladser1 = kapsejladserService.createKapsejladser(kapsejladser1);
-    kapsejladser2 = kapsejladserService.createKapsejladser(kapsejladser2);
-    kapsejladser3 = kapsejladserService.createKapsejladser(kapsejladser3);
+    // Create races for each Wednesday
+    LocalDate startDate = LocalDate.of(2023, 5, 3); // The first Wednesday in the range
+    LocalDate endDate = LocalDate.of(2023, 10, 4); // The last Wednesday in the range
 
-    Deltagere deltagere1 = new Deltagere("Harald", sejlbaade1, kapsejladser1);
-    Deltagere deltagere2 = new Deltagere("Birk", sejlbaade2, kapsejladser1);
-    Deltagere deltagere3 = new Deltagere("Roedskaeg", sejlbaade3, kapsejladser1);
-    sejlbaade1.setDeltagere(deltagere1);
-    sejlbaade2.setDeltagere(deltagere2);
-    sejlbaade3.setDeltagere(deltagere3);
+    LocalDate currentWednesday = startDate;
+    while (currentWednesday.isBefore(endDate)) {
+      createRaceForBoatType(currentWednesday, LocalTime.of(12, 0), BaadType.MINDRE_END_25_FOD); // First race with boats below 25 feet
+      createRaceForBoatType(currentWednesday, LocalTime.of(14, 0), BaadType.MELLEM_25_OG_40_FOD); // Second race with boats between 25 and 40 feet
+      createRaceForBoatType(currentWednesday, LocalTime.of(16, 0), BaadType.STOERRE_END_40_FOD); // Last race with boats above 40 feet
+      currentWednesday = currentWednesday.plusWeeks(1);
+    }
+  }
 
+  private void createRaceForBoatType(LocalDate date, LocalTime time, BaadType boatType) {
+    Kapsejladser race = new Kapsejladser(date, time);
+    race = kapsejladserService.createKapsejladser(race);
 
-    deltagereService.createDeltagere(deltagere1);
-    deltagereService.createDeltagere(deltagere2);
-    deltagereService.createDeltagere(deltagere3);
+    List<Sejlbaade> boats = sejlbaadeService.getSejlbaadeByBoatType(boatType);
+    List<Deltagere> deltagereList = new ArrayList<>();
+
+    for (Sejlbaade boat : boats) {
+      // Check if the boat is already assigned to another participant in a different race
+      if (boat.getDeltagere() != null && !boat.getDeltagere().getKapsejladser().getDate().isEqual(date)) {
+        // Boat is already assigned to another race, skip this participant
+        continue;
+      }
+
+      Deltagere deltagere = new Deltagere("Participant " + boat.getId(), boat, race);
+
+      // Assign the boat to the participant
+      boat.setDeltagere(deltagere);
+      deltagereList.add(deltagere);
+    }
+
+    // Save the participants (deltagere) and update the boats
+    deltagereService.createMultipleDeltagere(deltagereList);
+    sejlbaadeService.updateMultipleSejlbaade(boats);
+  }
+  private Sejlbaade findAvailableBoat(BaadType boatType) {
+    List<Sejlbaade> availableBoats = sejlbaadeService.getSejlbaadeByBoatType(boatType);
+    for (Sejlbaade boat : availableBoats) {
+      if (boat.getDeltagere() == null) {
+        return boat;
+      }
+    }
+    return null; // No available boat of the specified type found
+  }
+
+  private BaadType getRandomBoatType() {
+    int randomIndex = new Random().nextInt(BaadType.values().length);
+    return BaadType.values()[randomIndex];
   }
 }

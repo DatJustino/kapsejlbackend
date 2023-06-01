@@ -1,5 +1,6 @@
 package com.example.kapsejlbackend.service;
 
+import com.example.kapsejlbackend.model.BaadType;
 import com.example.kapsejlbackend.model.Kapsejladser;
 import com.example.kapsejlbackend.model.Sejlbaade;
 import com.example.kapsejlbackend.repository.KapsejladserRepository;
@@ -56,12 +57,27 @@ public class SejlbaadeService {
   public void deleteSejlbaade(Long id) {
     sejlbaadeRepository.deleteById(id);
   }
+
   public void setKapsejladsForSejlbaade(Long sejlbaadeId, Long kapsejladsId) {
-    Sejlbaade sejlbaade = sejlbaadeRepository.findById(sejlbaadeId).orElseThrow(() -> new IllegalArgumentException("Sejlbaade not found"));
-    Kapsejladser kapsejlads = kapsejladserRepository.findById(kapsejladsId).orElseThrow(() -> new IllegalArgumentException("Kapsejlads not found"));
+    Sejlbaade sejlbaade = sejlbaadeRepository.findById(sejlbaadeId)
+        .orElseThrow(() -> new IllegalArgumentException("Sejlbaade not found"));
+    Kapsejladser kapsejlads = kapsejladserRepository.findById(kapsejladsId)
+        .orElseThrow(() -> new IllegalArgumentException("Kapsejlads not found"));
 
     sejlbaade.setKapsejladser(kapsejlads);
     sejlbaadeRepository.save(sejlbaade);
+  }
+
+  public List<Sejlbaade> getSejlbaadeByBoatType(BaadType boatType) {
+    return sejlbaadeRepository.findByBaadType(boatType);
+  }
+
+  public List<Sejlbaade> createMultipleSejlbaade(List<Sejlbaade> sejlbaadeList) {
+    return sejlbaadeRepository.saveAll(sejlbaadeList);
+  }
+
+  public void updateMultipleSejlbaade(List<Sejlbaade> sejlbaadeList) {
+    sejlbaadeRepository.saveAll(sejlbaadeList);
   }
 }
 

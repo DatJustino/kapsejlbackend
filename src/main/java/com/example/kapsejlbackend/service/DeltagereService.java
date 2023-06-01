@@ -46,5 +46,8 @@ public class DeltagereService {
   public void deleteDeltagere(Long id) {
     deltagereRepository.deleteById(id);
   }
+  public List<Deltagere> createMultipleDeltagere(List<Deltagere> deltagereList) {
+    return deltagereRepository.saveAll(deltagereList);
+  }
 }
 
