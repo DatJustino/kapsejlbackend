@@ -29,9 +29,9 @@ public class InitData implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    Sejlbaade sejlbaade1 = new Sejlbaade("Boat 1", BaadType.STOERRE_END_40_FOD);
-    Sejlbaade sejlbaade2 = new Sejlbaade("Boat 2", BaadType.MINDRE_END_25_FOD);
-    Sejlbaade sejlbaade3 = new Sejlbaade("Boat 3", BaadType.MELLEM_25_OG_40_FOD);
+    Sejlbaade sejlbaade1 = new Sejlbaade(null, "Boat 1", BaadType.STOERRE_END_40_FOD, null, 3, null);
+    Sejlbaade sejlbaade2 = new Sejlbaade(null, "Boat 2", BaadType.MINDRE_END_25_FOD, null, 2, null);
+    Sejlbaade sejlbaade3 = new Sejlbaade(null, "Boat 3", BaadType.MELLEM_25_OG_40_FOD, null, 1, null);
 
     sejlbaade1 = sejlbaadeService.createSejlbaade(sejlbaade1);
     sejlbaade2 = sejlbaadeService.createSejlbaade(sejlbaade2);
@@ -45,9 +45,13 @@ public class InitData implements CommandLineRunner {
     kapsejladser2 = kapsejladserService.createKapsejladser(kapsejladser2);
     kapsejladser3 = kapsejladserService.createKapsejladser(kapsejladser3);
 
-    Deltagere deltagere1 = new Deltagere("Harald", sejlbaade1, kapsejladser1, 1);
-    Deltagere deltagere2 = new Deltagere("Birk", sejlbaade2, kapsejladser1, 2);
-    Deltagere deltagere3 = new Deltagere("Roedskaeg", sejlbaade3, kapsejladser1, 3);
+    Deltagere deltagere1 = new Deltagere("Harald", sejlbaade1, kapsejladser1);
+    Deltagere deltagere2 = new Deltagere("Birk", sejlbaade2, kapsejladser1);
+    Deltagere deltagere3 = new Deltagere("Roedskaeg", sejlbaade3, kapsejladser1);
+    sejlbaade1.setDeltagere(deltagere1);
+    sejlbaade2.setDeltagere(deltagere2);
+    sejlbaade3.setDeltagere(deltagere3);
+
 
     deltagereService.createDeltagere(deltagere1);
     deltagereService.createDeltagere(deltagere2);

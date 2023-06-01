@@ -38,7 +38,6 @@ public class DeltagereService {
       updatedDeltagere.setKaptajnsNavn(deltagere.getKaptajnsNavn());
       updatedDeltagere.setSejlbaade(deltagere.getSejlbaade());
       updatedDeltagere.setKapsejladser(deltagere.getKapsejladser());
-      updatedDeltagere.setPoint(deltagere.getPoint());
       return deltagereRepository.save(updatedDeltagere);
     }
     return null;

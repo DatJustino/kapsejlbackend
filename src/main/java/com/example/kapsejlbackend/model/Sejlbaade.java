@@ -1,24 +1,18 @@
 package com.example.kapsejlbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 @Entity
 @Table(name = "sejlbaade")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Sejlbaade {
-  public Sejlbaade(String baadNavn, BaadType baadType) {
-    this.baadNavn = baadNavn;
-    this.baadType = baadType;
-  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -30,12 +24,23 @@ public class Sejlbaade {
   @Column(name = "baadtype", nullable = false)
   private BaadType baadType;
 
-  @JsonIgnore
   @OneToOne(mappedBy = "sejlbaade", cascade = CascadeType.ALL)
+  @JsonIgnoreProperties("sejlbaade")
   private Deltagere deltagere;
+
+  @Column(name = "point", nullable = false)
+  private int point;
+
+  public void setKapsejladser(Kapsejladser kapsejlads) {
+    if (this.deltagere == null) {
+      this.deltagere = new Deltagere();
+    }
+    this.deltagere.setKapsejladser(kapsejlads);
+  }
 
   @Transient
   private String baadTypeDisplayName;
+
   public void setBaadTypeDisplayName(String baadTypeDisplayName) {
     this.baadTypeDisplayName = baadTypeDisplayName;
   }

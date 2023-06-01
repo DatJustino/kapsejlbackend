@@ -3,6 +3,7 @@ package com.example.kapsejlbackend.controller;
 import com.example.kapsejlbackend.model.Sejlbaade;
 import com.example.kapsejlbackend.service.SejlbaadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,15 @@ public class SejlbaadeController {
     Sejlbaade createdSejlbaade = sejlbaadeService.createSejlbaade(sejlbaade);
     return ResponseEntity.ok(createdSejlbaade);
   }
-
+  @PostMapping("/{sejlbaadeId}/kapsejlads/{kapsejladsId}")
+  public ResponseEntity<?> setKapsejladsForSejlbaade(@PathVariable Long sejlbaadeId, @PathVariable Long kapsejladsId) {
+    try {
+      sejlbaadeService.setKapsejladsForSejlbaade(sejlbaadeId, kapsejladsId);
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
   @PutMapping("/{id}")
   public ResponseEntity<Sejlbaade> updateSejlbaade(@PathVariable Long id, @RequestBody Sejlbaade sejlbaade) {
     Sejlbaade updatedSejlbaade = sejlbaadeService.updateSejlbaade(id, sejlbaade);

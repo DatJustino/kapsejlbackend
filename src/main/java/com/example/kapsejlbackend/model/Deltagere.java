@@ -1,18 +1,18 @@
 package com.example.kapsejlbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "deltagere")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Deltagere {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -22,19 +22,17 @@ public class Deltagere {
 
   @OneToOne
   @JoinColumn(name = "sejlbaade_id")
+  @JsonIgnoreProperties("deltagere")
   private Sejlbaade sejlbaade;
 
   @ManyToOne
   @JoinColumn(name = "kapsejladser_id", nullable = false)
+  @JsonIgnoreProperties("deltagere")
   private Kapsejladser kapsejladser;
 
-  @Column(name = "point", nullable = false)
-  private int point;
-
-  public Deltagere(String kaptajnsNavn, Sejlbaade sejlbade, Kapsejladser kapsejladser, int point) {
+  public Deltagere(String kaptajnsNavn, Sejlbaade sejlbaade, Kapsejladser kapsejladser) {
     this.kaptajnsNavn = kaptajnsNavn;
-    this.sejlbaade = sejlbade;
+    this.sejlbaade = sejlbaade;
     this.kapsejladser = kapsejladser;
-    this.point = point;
   }
 }
