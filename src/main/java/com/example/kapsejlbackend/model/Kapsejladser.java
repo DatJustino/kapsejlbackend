@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "kapsejladser")
@@ -22,7 +24,15 @@ public class Kapsejladser {
   @Column(name = "dato", nullable = false)
   private LocalDate dato;
 
+  @OneToMany(mappedBy = "kapsejlads", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RaceTime> raceTimes = new ArrayList<>();
+
   public Kapsejladser(LocalDate dato) {
     this.dato = dato;
+  }
+
+  public void addRaceTime(RaceTime raceTime) {
+    raceTimes.add(raceTime);
+    raceTime.setKapsejlads(this);
   }
 }

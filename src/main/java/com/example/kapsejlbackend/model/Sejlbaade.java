@@ -1,17 +1,18 @@
 package com.example.kapsejlbackend.model;
 
+import com.example.kapsejlbackend.model.BaadType;
+import com.example.kapsejlbackend.model.Deltagere;
+import com.example.kapsejlbackend.model.RaceTime;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sejlbaade")
-@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Sejlbaade {
@@ -34,8 +35,12 @@ public class Sejlbaade {
   @OneToOne(mappedBy = "sejlbaade", cascade = CascadeType.ALL)
   private Deltagere deltagere;
 
+  @OneToMany(mappedBy = "sejlbaade", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RaceTime> raceTimes;
+
   @Transient
   private String baadTypeDisplayName;
+
   public void setBaadTypeDisplayName(String baadTypeDisplayName) {
     this.baadTypeDisplayName = baadTypeDisplayName;
   }

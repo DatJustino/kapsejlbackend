@@ -31,10 +31,9 @@ public class Deltagere {
   @Column(name = "point", nullable = false)
   private int point;
 
-  public Deltagere(String kaptajnsNavn, Sejlbaade sejlbade, Kapsejladser kapsejladser, int point) {
+  public Deltagere(String kaptajnsNavn, Sejlbaade sejlbade, Kapsejladser kapsejladser) {
     this.kaptajnsNavn = kaptajnsNavn;
     this.sejlbaade = sejlbade;
     this.kapsejladser = kapsejladser;
-    this.point = point;
   }
 }

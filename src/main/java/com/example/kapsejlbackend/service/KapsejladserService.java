@@ -10,27 +10,21 @@ import java.util.Optional;
 
 @Service
 public class KapsejladserService {
-
   private final KapsejladserRepository kapsejladserRepository;
-
   @Autowired
   public KapsejladserService(KapsejladserRepository kapsejladserRepository) {
     this.kapsejladserRepository = kapsejladserRepository;
   }
-
   public List<Kapsejladser> getAllKapsejladser() {
     return kapsejladserRepository.findAll();
   }
-
   public Kapsejladser getKapsejladserById(Long id) {
     Optional<Kapsejladser> kapsejladser = kapsejladserRepository.findById(id);
     return kapsejladser.orElse(null);
   }
-
   public Kapsejladser createKapsejladser(Kapsejladser kapsejladser) {
     return kapsejladserRepository.save(kapsejladser);
   }
-
   public Kapsejladser updateKapsejladser(Long id, Kapsejladser kapsejladser) {
     Optional<Kapsejladser> existingKapsejladser = kapsejladserRepository.findById(id);
     if (existingKapsejladser.isPresent()) {
@@ -40,9 +34,7 @@ public class KapsejladserService {
     }
     return null;
   }
-
   public void deleteKapsejladser(Long id) {
     kapsejladserRepository.deleteById(id);
   }
 }
-

@@ -10,14 +10,11 @@ import java.util.Optional;
 
 @Service
 public class DeltagereService {
-
   private final DeltagereRepository deltagereRepository;
-
   @Autowired
   public DeltagereService(DeltagereRepository deltagereRepository) {
     this.deltagereRepository = deltagereRepository;
   }
-
   public List<Deltagere> getAllDeltagere() {
     return deltagereRepository.findAll();
   }
@@ -30,7 +27,6 @@ public class DeltagereService {
   public Deltagere createDeltagere(Deltagere deltagere) {
     return deltagereRepository.save(deltagere);
   }
-
   public Deltagere updateDeltagere(Long id, Deltagere deltagere) {
     Optional<Deltagere> existingDeltagere = deltagereRepository.findById(id);
     if (existingDeltagere.isPresent()) {
@@ -43,7 +39,6 @@ public class DeltagereService {
     }
     return null;
   }
-
   public void deleteDeltagere(Long id) {
     deltagereRepository.deleteById(id);
   }

@@ -1,9 +1,6 @@
 package com.example.kapsejlbackend.config;
 
-import com.example.kapsejlbackend.model.BaadType;
-import com.example.kapsejlbackend.model.Deltagere;
-import com.example.kapsejlbackend.model.Kapsejladser;
-import com.example.kapsejlbackend.model.Sejlbaade;
+import com.example.kapsejlbackend.model.*;
 import com.example.kapsejlbackend.service.DeltagereService;
 import com.example.kapsejlbackend.service.KapsejladserService;
 import com.example.kapsejlbackend.service.SejlbaadeService;
@@ -12,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Component
 public class InitData implements CommandLineRunner {
@@ -45,12 +43,23 @@ public class InitData implements CommandLineRunner {
     kapsejladser2 = kapsejladserService.createKapsejladser(kapsejladser2);
     kapsejladser3 = kapsejladserService.createKapsejladser(kapsejladser3);
 
-    Deltagere deltagere1 = new Deltagere("Harald", sejlbaade1, kapsejladser1, 1);
-    Deltagere deltagere2 = new Deltagere("Birk", sejlbaade2, kapsejladser1, 2);
-    Deltagere deltagere3 = new Deltagere("Roedskaeg", sejlbaade3, kapsejladser1, 3);
+    Deltagere deltagere1 = new Deltagere("Harald", sejlbaade1, kapsejladser1);
+    Deltagere deltagere2 = new Deltagere("Birk", sejlbaade2, kapsejladser2);
+    Deltagere deltagere3 = new Deltagere("Roedskaeg", sejlbaade3, kapsejladser3);
 
     deltagereService.createDeltagere(deltagere1);
     deltagereService.createDeltagere(deltagere2);
     deltagereService.createDeltagere(deltagere3);
+
+    // Add race times for each participant
+    RaceTime raceTime1 = new RaceTime(LocalTime.of(1, 30, 15), sejlbaade1, kapsejladser1);
+    RaceTime raceTime2 = new RaceTime(LocalTime.of(1, 25, 45), sejlbaade2, kapsejladser1);
+    RaceTime raceTime3 = new RaceTime(LocalTime.of(1, 20, 30), sejlbaade3, kapsejladser1);
+
+    kapsejladser1.addRaceTime(raceTime1);
+    kapsejladser1.addRaceTime(raceTime2);
+    kapsejladser1.addRaceTime(raceTime3);
+
+    kapsejladserService.updateKapsejladser(kapsejladser1.getId(), kapsejladser1);
   }
 }

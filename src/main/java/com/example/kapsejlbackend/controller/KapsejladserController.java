@@ -1,6 +1,7 @@
 package com.example.kapsejlbackend.controller;
 
 import com.example.kapsejlbackend.model.Kapsejladser;
+import com.example.kapsejlbackend.model.RaceTime;
 import com.example.kapsejlbackend.service.KapsejladserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,29 @@ public class KapsejladserController {
     Kapsejladser kapsejladser = kapsejladserService.getKapsejladserById(id);
     return ResponseEntity.ok(kapsejladser);
   }
+  @GetMapping("/{id}/sejlbaade")
+  public ResponseEntity<List<RaceTime>> getRaceTimesForKapsejlads(@PathVariable Long id) {
+    Kapsejladser kapsejladser = kapsejladserService.getKapsejladserById(id);
+    if (kapsejladser != null) {
+      List<RaceTime> raceTimes = kapsejladser.getRaceTimes();
+      return ResponseEntity.ok(raceTimes);
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
 
+
+  @PostMapping("/{id}/sejlbaade")
+  public ResponseEntity<Kapsejladser> addRaceTimeToKapsejlads(@PathVariable Long id, @RequestBody RaceTime raceTime) {
+    Kapsejladser kapsejladser = kapsejladserService.getKapsejladserById(id);
+    if (kapsejladser != null) {
+      kapsejladser.addRaceTime(raceTime);
+      kapsejladserService.updateKapsejladser(id, kapsejladser);
+      return ResponseEntity.ok(kapsejladser);
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
   @PostMapping
   public ResponseEntity<Kapsejladser> createKapsejladser(@RequestBody Kapsejladser kapsejladser) {
     Kapsejladser createdKapsejladser = kapsejladserService.createKapsejladser(kapsejladser);

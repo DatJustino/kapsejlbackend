@@ -26,7 +26,6 @@ public class SejlbaadeService {
     return sejlbaadeList;
   }
 
-
   public Sejlbaade getSejlbaadeById(Long id) {
     Optional<Sejlbaade> sejlbaade = sejlbaadeRepository.findById(id);
     return sejlbaade.orElse(null);
